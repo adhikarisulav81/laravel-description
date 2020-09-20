@@ -1,0 +1,106 @@
+LARAVEL FRAMEWORK -- A Short Briefing
+_________________    ________________
+
+
+1.	How to install Composer through PHPStorm terminal?
+	Answer:	Enter the command:	composer global require "laravel/installer" into the PHP Storm terminal. Or you can download the composer through google assist.
+
+2.	How to Create a project in laravel?  (The project must be created in the htdocs folder of Xampp)
+	Enter the command:	composer create-project --prefer-dist laravel/(projectName)  in command prompt or in phpStorm terminal
+
+3.	Now your first task is to create the view pages in resource/views folder in phpStorm (in naming format as: welcome.blade.php)
+
+4.	Then routing is done. Route performs the displaying functionality of the view page. It is located as routes/web.php
+
+5.	Now creating a controller:	Enter:	php artisan make:controller (controllerName) in the terminal.	Controllers are present in app/HTTP/Controllers
+
+6.	In controller page; we define the functions 
+	Like;	public function program(){
+			return view ('program');
+		}
+	Now in route i.e. web.php we define as;
+		Route:get('/program', 'Controller@program');			 (here; Controller is the controllerName and prgoram is the function present in controller page)
+
+7.	Now in case the view pages have the common code then we can create master.blade.php view page and keep the common code there. Here we need to know about section, endsection, yield, extends etc.
+		@yield is used in master.blade.php and other all i.e. @section, @endsection or @stop, @extends are used in other view pages.
+
+
+Then we come to  [model, database connection, migration, seeding, factory] 
+	We send the db table created at PHP storm to MYSQL database which is migration in a simple term..
+
+8.	For performing migration, at first we create empty database in MYSQL with db name and collation as a charater type then click create. Then we move to PHP storm.
+
+9.	Now for connecting the MYSQL db to the project we go to .env file in PHP storm. There you need to change the db name and other required configuration.
+
+10.	To make migration we enter the command: php artisan make:migration create_students_table --create=(tableName) in the terminal
+
+11.	Now migration is created. Migrations folder is inside database folder in PHP storm. Opening the created migration, now we need to fill the fields that are required in that table.  
+
+12.	Now the table needs to be migrated. So enter command: 	php artisan migrate in the terminal then all the migrations gets migrated.
+
+		But in case if error occurs while migrating. Then go to app/providers/AppServiceProvider.php 
+			and enter;
+				public function boot () {
+					Schema :: defaultStringLength('191');
+				}
+
+	Finally Migration is done.
+
+Now we perform seeding;
+13.	Creating Seeder:	Enter command: php artisan make:seeder (SeederName). Inside database, seeds folder is there which contains the Seeder.
+		Opening Seeder file, we see run method. So there we directly or indirectly contact with database. Like;
+			
+			//DB::table('tableName')->insert()   connecting with database table without using model file.
+			App\Student::insert([		//this is the indirect method where Student is a Model.
+           			[
+                			'studentName'=>'Sulav1 Adhikari',
+               				'address'=>'Kohalpur',
+              				'age'=>20
+           			]
+
+Above content is only the inserting code. So it needs to be seed. So open Database Seeder file and in run method, enter:	$this->call('Name of the created Seeder::class');
+Now we enter command:	php artisan db:seed
+Finally seeding is done. Now you can check your table creation on MYSQL database. 
+
+14.	Next step is creating a model. To make a model, enter command:	php artisan make:model modelName
+		Model is located inside app in PHP Storm
+	
+	Inside model we define table name.
+		Like;	protected $table='customerInfo';	//customerInfo is the tableName
+	Also we define the required fields of a table. 
+		Like;	protected $fillable=['customerName','address','age','organization','email','mobile','image'];	//these are the fields of a table
+
+Finally we again seed the data by entering a command:	php artisan db:seed
+
+
+
+
+Factory is created to send fake records/data. Especially used for data testing purpose. 
+15.	To make a factory we enter a command:	php artisan make:factory FactoryName
+	factories is located inside database.
+	
+	Factory imports model and faker class
+
+Inside define in factory, we put the model name(i.e. like; \App\Student)
+
+and inside return we put as;
+
+return [
+	'studentName'=>$faker->name,
+	'address'=>$faker->address,
+	'age'=>$faker->numberBetween(20,30)
+];
+Now again go to database seeder;
+	and call factory inside run method as;
+		factory(\App\Student(i.e.modelname)::class, 20)->create();
+
+			now lastly enter the command:	php artisan db:seed
+
+
+
+In php to echo we use;
+<?php
+	echo "Hello";
+?>
+
+But in laravel to print we can directly type the word as Hello.
